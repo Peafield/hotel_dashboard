@@ -1,6 +1,8 @@
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 import uuid
 from app.models.room import Room, RoomUpdate
+from app.utils import pdf_generator
 
 # In-memory storage for the take-home-test.
 # In a real world example I would use a proper DB (Mongodb etc.)
@@ -13,11 +15,18 @@ def get_all_rooms() -> List[Room]:
 
 
 def save_room(room: Room):
-    """Saves a room object into the in-memory database"""
-    if room.id in db:
-        print(f"Warning: Room ID {room.id} already exists. Overwriting...")
+    """Saves or updates a room object, updating timestamps AND generates PDF."""
+    room.updated_at = datetime.now(timezone.utc)
+
     db[room.id] = room
-    print(f"Room '{room.name}' (ID: {room.id}) saved.")
+    print(
+        f"Room '{room.name}' (ID: {room.id}) saved/updated in DB at {room.updated_at}."
+    )
+
+    try:
+        pdf_generator(room)
+    except Exception as e:
+        print(f"Error during PDF generation for room {room.id}: {e}")
 
 
 def get_room_by_id(room_id: uuid.UUID) -> Optional[Room]:
