@@ -2,7 +2,8 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional
 import uuid
 from app.models.room import Room, RoomUpdate
-from app.utils import pdf_generator
+from app.utils.pdf_generator import generate_room_pdf
+
 
 # In-memory storage for the take-home-test.
 # In a real world example I would use a proper DB (Mongodb etc.)
@@ -24,7 +25,7 @@ def save_room(room: Room):
     )
 
     try:
-        pdf_generator(room)
+        generate_room_pdf(room)
     except Exception as e:
         print(f"Error during PDF generation for room {room.id}: {e}")
 
@@ -58,7 +59,7 @@ def update_room(room_id: uuid.UUID, room_update: RoomUpdate) -> Optional[Room]:
 
     update_data = room_update.model_dump(exclude_unset=True)
 
-    # If no data was add in update_data, just return the existing room.
+    # If no data was added in update_data, just return the existing room.
     if not update_data:
         return existing_room
 

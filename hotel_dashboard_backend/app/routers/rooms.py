@@ -1,6 +1,9 @@
+import os
 from typing import Annotated, Dict, Optional
 from fastapi import APIRouter, File, Form, HTTPException, Response, UploadFile, status
 from typing import List
+
+from fastapi.responses import FileResponse
 from app.models.room import Room, RoomUpdate
 from app.db.memory import (
     delete_room_by_id,
@@ -12,6 +15,8 @@ from app.db.memory import (
 import uuid
 from app.utils.file_handler import save_upload_file
 import json
+
+from app.utils.pdf_generator import PDF_OUTPUT_DIR
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
@@ -157,3 +162,40 @@ async def delete_room(room_id: uuid.UUID):
             status_code=status.HTTP_404_NOT_FOUND, detail="Room not found"
         )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get(
+    "/{room_id}/pdf",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "description": "PDF file for the specified room.",
+            "content": {"application/pdf": {}},
+        },
+        404: {"description": "Room or PDF not found"},
+    },
+)
+async def download_room_pdf(room_id: uuid.UUID):
+    """
+    Downloads the generated PDF file for a specific room.
+    Returns the PDF file if found, otherwise returns a 404 error.
+    """
+    pdf_filename = f"room_{room_id}.pdf"
+    file_path = os.path.join(PDF_OUTPUT_DIR, pdf_filename)
+
+    if not os.path.exists(file_path):
+        room = get_room_by_id(room_id)
+        if not room:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Room not found"
+            )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"PDF not found for room {room_id}. Generate it by saving the room details.",
+        )
+
+    return FileResponse(
+        path=file_path,
+        media_type="application/pdf",
+        filename=pdf_filename,
+    )
