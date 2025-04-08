@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { LeftNav } from "@/components/LeftNav";
 
 const karla = localFont({
   src: "./fonts/Karla-VariableFont_wght.ttf",
@@ -29,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${karla.variable} ${merriweather.variable} antialiased`}
       >
-        {children}
+        <div className="flex">
+          <LeftNav />
+          <main className="flex-1 p-6 bg-white">{children}</main>
+        </div>
       </body>
     </html>
   );
