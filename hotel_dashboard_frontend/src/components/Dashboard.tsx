@@ -8,6 +8,7 @@ import { ActionButton } from "./buttons/ActionButton";
 import { LargeActionButton } from "./buttons/LargeActionButton";
 import { PageTitle } from "./typography/PageTitle";
 import { RoomDetailsForm } from "./form/RoomDetailsForm";
+import { CreateNewRoom } from "./CreateNewRoom";
 
 type DashboardProps = {
   className?: string;
@@ -40,7 +41,7 @@ export function Dashboard({ className }: DashboardProps) {
         )}
       </header>
       {dashboardViewState === "RoomList" && <RoomList rooms={dummyRoomData} />}
-      {dashboardViewState === "Create" && <RoomDetailsForm />}
+      {dashboardViewState === "Create" && <CreateNewRoom />}
     </section>
   );
 }

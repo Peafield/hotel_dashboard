@@ -4,7 +4,7 @@ type LargeActionButtonProps = {
   title: string;
   type: "button" | "submit";
   onClick?: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   className?: string;
 };
 

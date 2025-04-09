@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useRef, useState } from "react";
 import { ActionButton } from "../buttons/ActionButton";
 import { LargeActionButton } from "../buttons/LargeActionButton";
 import { Heading } from "../typography/Heading";
@@ -6,16 +6,18 @@ import { ImageInput } from "./ImageInput";
 import { TextAreaInput } from "./TextAreaInput";
 import { TextInput } from "./TextInput";
 import type { RoomFormData } from "@/types";
+import { DeleteIcon } from "../svgs/DeleteIcon";
 
 export function RoomDetailsForm() {
   const [formData, setFormData] = useState<RoomFormData>({
     title: "",
     description: "",
     currentFacility: "",
-    facilities: [] as string[],
+    facilities: [],
     selectedFile: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,18 +37,52 @@ export function RoomDetailsForm() {
     }));
   };
 
+  const handleAddImageClick = () => {
+    setFormData((prevState) => ({ ...prevState, selectedFile: null }));
+    fileInputRef.current?.click();
+  };
+
+  const handleFacilityInputChange = (
+    index: number,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const newText = event.target.value;
+    setFormData((prevState) => ({
+      ...prevState,
+      facilities: prevState.facilities.map((item, i) =>
+        i === index ? { ...item, text: newText } : item
+      ),
+    }));
+  };
+
   const handleAddFacility = () => {
-    const facilityToAdd = formData.currentFacility.trim();
-    if (facilityToAdd) {
+    const facilityTextToAdd = formData.currentFacility.trim();
+    if (facilityTextToAdd) {
+      const newFacility = {
+        id: crypto.randomUUID(),
+        text: facilityTextToAdd,
+      };
       setFormData((prevState) => ({
         ...prevState,
-        facilities: [...prevState.facilities, facilityToAdd],
+        facilities: [...prevState.facilities, newFacility],
         currentFacility: "",
       }));
     }
   };
 
-  const handleSubmit = () => {};
+  const handleRemoveFacility = (indexToRemove: number) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      facilities: prevState.facilities.filter(
+        (_, index) => index !== indexToRemove
+      ),
+    }));
+  };
+
+  // TODO: WIRE UP SUBMIT
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+  };
   return (
     <form className="w-[630px]" onSubmit={handleSubmit}>
       <Heading title="Room details" />
@@ -68,13 +104,21 @@ export function RoomDetailsForm() {
         required={true}
         onChange={handleInputChange}
       />
-      <ImageInput id="ImageUpload" onChange={handleFileChange} />
-      <ActionButton
-        title="ADD IMAGE"
-        type="button"
-        actionButtonType="add"
-        className="mb-8"
+      <ImageInput
+        id="ImageUpload"
+        onChange={handleFileChange}
+        selectedFile={formData.selectedFile}
+        ref={fileInputRef}
       />
+      {!formData.selectedFile && (
+        <ActionButton
+          title="ADD IMAGE"
+          type="button"
+          actionButtonType="add"
+          onClick={handleAddImageClick}
+          className="mb-8"
+        />
+      )}
       <Heading title="Facilties" />
       <TextInput
         label="Facility"
@@ -83,9 +127,27 @@ export function RoomDetailsForm() {
         placeholder="Facility detail"
         value={formData.currentFacility}
         required={true}
-        onChange={handleAddFacility}
+        onChange={handleInputChange}
       />
-      {/* TODO: display add facitilies */}
+      {formData.facilities.map((facility, index) => (
+        <div key={facility.id} className="flex items-center mb-2 gap-2">
+          <TextInput
+            label="Facility"
+            id={facility.id}
+            name={`facility-${index}`}
+            value={facility.text}
+            onChange={(e) => handleFacilityInputChange(index, e)}
+            placeholder="Facility detail"
+          />
+          <button
+            type="button"
+            onClick={() => handleRemoveFacility(index)}
+            className="p-1 cursor-pointer"
+          >
+            <DeleteIcon className="size-3" />
+          </button>
+        </div>
+      ))}
       <ActionButton
         title="ADD FACILITY"
         type="button"
@@ -93,7 +155,7 @@ export function RoomDetailsForm() {
         onClick={handleAddFacility}
       />
       <LargeActionButton
-        title="create and generate PDF"
+        title={isSubmitting ? "Submitting..." : "Create and generate pdf"}
         type="submit"
         className="mt-16"
         disabled={isSubmitting}

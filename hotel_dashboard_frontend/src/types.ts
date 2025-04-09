@@ -43,16 +43,20 @@ export const RoomFormDataSchema = z.object({
   title: z.string(),
   description: z.string(),
   currentFacility: z.string(),
-  facilities: z.array(z.string()),
+  facilities: z.array(
+    z.object({
+      id: z.string(),
+      text: z.string(),
+    })
+  ),
   selectedFile: z
     .instanceof(File, { message: "Image is required." })
     .refine((file) => file.size <= MAX_FILE_SIZE_BYTES, {
       message: "Max image size is 5MB.",
     })
     .refine((file) => ACCEPTED_IMAGE_MIME_TYPES.includes(file.type), {
-      message: "Only .jpeg, .png, .webp, and .gif formats are accepted.",
+      message: "Only .jpeg, .png, and .webp, formats are accepted.",
     })
-    .optional()
     .nullable(),
 });
 
