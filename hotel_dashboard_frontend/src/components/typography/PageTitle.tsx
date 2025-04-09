@@ -1,5 +1,7 @@
+import type { PageTitles } from "@/types";
+
 type PageTitleProps = {
-  title: string;
+  title: PageTitles;
   className?: string;
 };
 

@@ -1,5 +1,5 @@
-import { AllRooms } from "@/components/AllRooms";
+import { Dashboard } from "@/components/Dashboard";
 
 export default function Home() {
-  return <AllRooms />;
+  return <Dashboard />;
 }

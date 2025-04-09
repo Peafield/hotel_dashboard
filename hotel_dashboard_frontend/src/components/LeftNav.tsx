@@ -11,9 +11,11 @@ export function LeftNav() {
           alt="Logo for The Hugo hotel"
           width={160.23}
           height={58}
+          priority
         />
       </div>
       <ul className="flex flex-row items-center justify-center">
+        {/* TODO: workout what's going on here! */}
         <li className="w-full border-s-4 border-hugo-red  ">
           <Link
             href={"#"}

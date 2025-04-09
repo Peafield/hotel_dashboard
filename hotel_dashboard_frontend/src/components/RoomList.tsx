@@ -64,19 +64,19 @@ export function RoomList({ rooms, className }: RoomListProps) {
           ) : (
             rooms.map((room) => (
               <tr key={room.id} className="hover:bg-gray-50">
-                <td className="px-4 py-4 whitespace-nowrap text-[12px] text-hugo-dark-gray font-serif cursor-pointer">
+                <td className="px-4 py-4 whitespace-nowrap text-xs text-hugo-dark-gray font-serif cursor-pointer">
                   {room.name}
                 </td>
-                <td className="px-4 py-4 whitespace-normal text-[12px] text-hugo-dark-gray max-w-xs truncate font-serif cursor-pointer">
+                <td className="px-4 py-4 whitespace-normal text-xs text-hugo-dark-gray max-w-xs truncate font-serif cursor-pointer">
                   {room.description}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-[12px] text-hugo-dark-gray font-serif cursor-pointer">
+                <td className="px-4 py-4 whitespace-nowrap text-xs text-hugo-dark-gray font-serif cursor-pointer">
                   {room.facilities?.length || 0}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-[12px] text-hugo-dark-gray font-serif cursor-pointer">
+                <td className="px-4 py-4 whitespace-nowrap text-xs text-hugo-dark-gray font-serif cursor-pointer">
                   {formatDate(room.created_at)}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-[12px] text-hugo-dark-gray font-serif cursor-pointer">
+                <td className="px-4 py-4 whitespace-nowrap text-xs text-hugo-dark-gray font-serif cursor-pointer">
                   {formatDate(room.updated_at)}
                 </td>
               </tr>
