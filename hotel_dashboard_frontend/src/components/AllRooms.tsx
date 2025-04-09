@@ -1,4 +1,4 @@
-import { ActionButton } from "./buttons/ActionButton";
+import { LargeActionButton } from "./buttons/LargeActionButton";
 import { PageTitle } from "./typography/PageTitle";
 
 type AllRoomsProps = {
@@ -10,7 +10,7 @@ export function AllRooms({ className }: AllRoomsProps) {
     <section className="flex-1 p-4">
       <header className="w-full flex items-center justify-between">
         <PageTitle title="All rooms" />
-        <ActionButton title="CREATE A ROOM" type="button" />
+        <LargeActionButton title="CREATE A ROOM" type="button" />
       </header>
     </section>
   );
