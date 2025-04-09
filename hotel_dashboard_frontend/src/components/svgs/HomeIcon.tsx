@@ -1,8 +1,6 @@
-type HomeIconProp = {
-  className?: string;
-};
+import type { IconProps } from "@/types";
 
-export function HomeIcon({ className }: HomeIconProp) {
+export function HomeIcon({ className }: IconProps) {
   return (
     <svg
       viewBox="0 0 20 17"

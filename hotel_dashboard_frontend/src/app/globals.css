@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme inline {
   --color-hugo-light-gray: #e5e7eb;
   --color-hugo-tan: #bfb8b0;
   --color-hugo-red: #ff5757;
