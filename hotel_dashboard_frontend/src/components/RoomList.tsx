@@ -6,6 +6,7 @@ type RoomListProps = {
 };
 
 export function RoomList({ rooms, className }: RoomListProps) {
+  // TODO: Make list items buttons that add currentRoom to store and load edit page
   const formatDate = (dateString: string | undefined) => {
     try {
       if (dateString) return new Date(dateString).toLocaleDateString("en-GB");
