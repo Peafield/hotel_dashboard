@@ -1,67 +1,72 @@
+import type { DashBoardViewState } from "@/types";
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect } from "react";
 
 type ImageInputProps = {
-  id: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-  className?: string;
-  selectedFile: File | null;
-  ref?: React.Ref<HTMLInputElement>;
+	id: string;
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	selectedFile: File | null;
+	mode: DashBoardViewState;
+	src?: string;
+	required?: boolean;
+	ref?: React.Ref<HTMLInputElement>;
+	className?: string;
 };
 
 export function ImageInput({
-  id,
-  onChange,
-  required = false,
-  selectedFile,
-  ref,
-  className,
+	id,
+	onChange,
+	selectedFile,
+	mode,
+	src,
+	required = false,
+	ref,
+	className,
 }: ImageInputProps) {
-  const imagePreviewUrl = selectedFile
-    ? URL.createObjectURL(selectedFile)
-    : null;
+	let imageUrl = "";
+	if (src && mode === "Edit") {
+		imageUrl = src;
+	}
 
-  useEffect(() => {
-    return () => {
-      if (imagePreviewUrl) {
-        URL.revokeObjectURL(imagePreviewUrl);
-      }
-    };
-  }, [imagePreviewUrl]);
+	if (selectedFile) {
+		imageUrl = URL.createObjectURL(selectedFile);
+	}
 
-  return (
-    <fieldset>
-      <label
-        htmlFor={id}
-        className={clsx(
-          "block Image-xs font-medium text-hugo-dark-gray font-sans mb-4",
-          className
-        )}
-      >
-        Image
-      </label>
-      {imagePreviewUrl && (
-        <div className="relative w-full max-w-56 aspect-video mb-8">
-          <Image
-            src={imagePreviewUrl}
-            alt="Preview"
-            fill
-            className="object-contain"
-          />
-        </div>
-      )}
-      <input
-        type="file"
-        id={id}
-        onChange={onChange}
-        required={required}
-        className="hidden"
-        disabled={!!imagePreviewUrl}
-        accept="image/png, image/jpeg, image/webp"
-        ref={ref}
-      />
-    </fieldset>
-  );
+	useEffect(() => {
+		return () => {
+			if (imageUrl) {
+				URL.revokeObjectURL(imageUrl);
+			}
+		};
+	}, [imageUrl]);
+
+	return (
+		<fieldset>
+			<label
+				htmlFor={id}
+				className={clsx(
+					"block Image-xs font-medium text-hugo-dark-gray font-sans mb-4",
+					className,
+				)}
+			>
+				Image
+			</label>
+			{imageUrl && (
+				<div className="relative w-full max-w-56 aspect-video mb-8">
+					<Image src={imageUrl} alt="Preview" fill className="object-contain" />
+				</div>
+			)}
+			<input
+				type="file"
+				id={id}
+				onChange={onChange}
+				required={required}
+				className="hidden"
+				disabled={!!imageUrl}
+				accept="image/png, image/jpeg, image/webp"
+				ref={ref}
+			/>
+		</fieldset>
+	);
 }

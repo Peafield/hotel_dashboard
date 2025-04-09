@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-hugo-light-gray: #e5e7eb;
-  --color-hugo-tan: #bfb8b0;
-  --color-hugo-red: #ff5757;
-  --color-hugo-dark-gray: #3b3b3b;
-  --font-sans: var(--font-karla), sans-serif;
-  --font-serif: var(--font-merriweather), serif;
+	--color-hugo-light-gray: #e5e7eb;
+	--color-hugo-tan: #bfb8b0;
+	--color-hugo-red: #ff5757;
+	--color-hugo-dark-gray: #3b3b3b;
+	--font-sans: var(--font-karla), sans-serif;
+	--font-serif: var(--font-merriweather), serif;
 }
 
 body {
-  @apply font-serif text-hugo-dark-gray antialiased;
+	@apply font-serif text-hugo-dark-gray antialiased;
 }
