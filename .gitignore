@@ -107,6 +107,12 @@ venv.bak/
 
 .idea/*
 
+*.pkl
+*.cw127.pkl
+assets/fonts/*.pkl
+assets/fonts/*.cw127.pkl
+
+
 # Front End
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
