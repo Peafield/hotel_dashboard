@@ -20,3 +20,19 @@ async def save_upload_file(upload_file: UploadFile, filename: str) -> str:
     finally:
         await upload_file.close()
     return save_path
+
+
+def delete_file_if_exists(file_path: str):
+    """Safely attempts to delete a file if it exists."""
+    if file_path and os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+            print(f"Successfully deleted file: {file_path}")
+            return True
+        except OSError as e:
+            print(f"Error deleting file {file_path}: {e}")
+            return False
+    elif file_path:
+        print(f"File not found for deletion, skipping: {file_path}")
+        return False
+    return True

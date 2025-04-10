@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { createRoom, updateRoom } from "@/lib/apiClient";
 import { useDashboardState } from "@/store/useDashboardStore";
 import type { RoomData, RoomFormData } from "@/types";
-import { createRoom /* TODO: import updateRoom */ } from "@/lib/apiClient";
+import { useState } from "react";
 
 interface UseRoomFormSubmitOptions {
   isEditing: boolean;
@@ -17,8 +17,8 @@ export function useRoomFormSubmit({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { add: addRoomToGlobalState } = useDashboardState();
-
+  const { add: addRoomToGlobalState, update: updateRoomInGlobalState } =
+    useDashboardState.getState();
   const submitHandler = async (formData: RoomFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
@@ -39,20 +39,8 @@ export function useRoomFormSubmit({
     try {
       let savedRoom: RoomData;
       if (isEditing && roomData) {
-        console.log(`PATCH /rooms/${roomData.id}`);
-        // TODO: Implement actual API call using updateRoom(roomData.id, apiFormData)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        savedRoom = {
-          ...roomData,
-          name: formData.name,
-          description: formData.description,
-          facilities: facilityTexts,
-          image_filename:
-            formData.selectedFile?.name ?? roomData.image_filename,
-          updated_at: new Date().toISOString(),
-        };
-        // TODO: Call zustand action to update room in list
-        // updateRoomInGlobalState(savedRoom);
+        savedRoom = await updateRoom(roomData.id, apiFormData);
+        updateRoomInGlobalState(savedRoom);
       } else {
         savedRoom = await createRoom(apiFormData);
         addRoomToGlobalState(savedRoom);

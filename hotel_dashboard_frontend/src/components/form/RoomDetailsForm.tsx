@@ -20,7 +20,7 @@ export function RoomDetailsForm({
   onSubmitSuccess,
 }: RoomDetailsFormProps) {
   const isEditing = Boolean(roomData);
-  const { dashboardViewState } = useDashboardState();
+  const { dashboardViewState, openDeleteModal } = useDashboardState();
   const { submitHandler, isSubmitting, submitError } = useRoomFormSubmit({
     isEditing,
     roomData,
@@ -112,11 +112,6 @@ export function RoomDetailsForm({
     }));
   };
 
-  const handleDeleteRoom = () => {
-    // TODO: call delete room
-    // Delete from state on success
-  };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     submitHandler(formData);
@@ -126,12 +121,12 @@ export function RoomDetailsForm({
     <form className="w-[630px]" onSubmit={handleSubmit}>
       <header className="w-full flex items-center justify-between">
         <Heading title="Room details" />
-        {dashboardViewState === "Edit" && (
+        {dashboardViewState === "Edit" && roomData && (
           <ActionButton
             title="DELETE ROOM"
             type="button"
             actionButtonType="delete"
-            onClick={handleDeleteRoom}
+            onClick={() => openDeleteModal(roomData.id)}
             className="mb-8"
           />
         )}
@@ -215,7 +210,7 @@ export function RoomDetailsForm({
             : "Save and Generate pdf"
         }
         type="submit"
-        className="mt-12"
+        className="bg-hugo-red mt-12"
         disabled={isSubmitting}
       />
       {submitError && (

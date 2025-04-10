@@ -13,7 +13,7 @@ from app.db.memory import (
     update_room,
 )
 import uuid
-from app.utils.file_handler import save_upload_file
+from app.utils.file_handler import UPLOAD_DIR, delete_file_if_exists, save_upload_file
 import json
 
 from app.utils.pdf_generator import PDF_OUTPUT_DIR
@@ -156,6 +156,38 @@ async def delete_room(room_id: uuid.UUID):
     Delete a specific hotel room by its unique ID.
     Returns HTTP 204 No Content on successful deletion.
     """
+    room_to_delete: Room | None = get_room_by_id(room_id)
+
+    if room_to_delete is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Room not found"
+        )
+
+    image_deleted = True
+    pdf_deleted = True
+
+    image_path_to_delete = None
+    if hasattr(room_to_delete, "image_filename") and room_to_delete.image_filename:
+        image_path_to_delete = os.path.join(UPLOAD_DIR, room_to_delete.image_filename)
+
+    pdf_path_to_delete = None
+    if hasattr(room_to_delete, "id") and room_to_delete.id:
+        pdf_path_to_delete = os.path.join(
+            PDF_OUTPUT_DIR, f"room_{room_to_delete.id}.pdf"
+        )
+
+    if image_path_to_delete:
+        image_deleted = delete_file_if_exists(image_path_to_delete)
+
+    if pdf_path_to_delete:
+        pdf_deleted = delete_file_if_exists(pdf_path_to_delete)
+
+    if not image_deleted or not pdf_deleted:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete associated files. Database record not deleted.",
+        )
+
     deleted_room = delete_room_by_id(room_id)
     if deleted_room is None:
         raise HTTPException(

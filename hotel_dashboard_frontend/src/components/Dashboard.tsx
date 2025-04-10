@@ -9,6 +9,7 @@ import { RoomList } from "./RoomList";
 import { ActionButton } from "./buttons/ActionButton";
 import { LargeActionButton } from "./buttons/LargeActionButton";
 import { PageTitle } from "./typography/PageTitle";
+import { DeleteConfirmModal } from "./modals/DeleteConfirmModal";
 
 export function Dashboard() {
   const {
@@ -18,6 +19,11 @@ export function Dashboard() {
     setDashboardViewState,
     setSelectedRoom,
     loadRooms,
+    isDeleteModalOpen,
+    isDeleting,
+    openDeleteModal,
+    closeDeleteModal,
+    confirmDeleteRoom,
   } = useDashboardState();
   const pageTitle = viewTitleMap[dashboardViewState];
 
@@ -53,7 +59,7 @@ export function Dashboard() {
             title="CREATE A ROOM"
             type="button"
             onClick={() => setDashboardViewState("Create")}
-            className="mt-8"
+            className="bg-hugo-red mt-8"
           />
         )}
       </header>
@@ -64,6 +70,12 @@ export function Dashboard() {
           onSubmitSucess={handleFormSubmitSuccess}
         />
       )}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDeleteRoom}
+        isLoading={isDeleting}
+      />
     </section>
   );
 }

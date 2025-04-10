@@ -1,4 +1,4 @@
-import { fetchRooms } from "@/lib/apiClient";
+import { deleteRoom, fetchRooms } from "@/lib/apiClient";
 import type { DashBoardViewState, RoomData } from "@/types";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -7,7 +7,9 @@ interface DashboardState {
   rooms: RoomData[];
   dashboardViewState: DashBoardViewState;
   selectedRoom: RoomData | undefined;
-  isDeletingExistingRoom: boolean;
+  isDeleteModalOpen: boolean;
+  roomToDeleteId: string | null;
+  isDeleting: boolean;
   isLoading: boolean;
   error: string | null;
   setDashboardViewState: (dashboardViewState: DashBoardViewState) => void;
@@ -15,14 +17,20 @@ interface DashboardState {
   setRooms: (roomData: RoomData[]) => Promise<void>;
   loadRooms: () => Promise<void>;
   add: (newRoom: RoomData) => void;
+  update: (updatedRoom: RoomData) => void;
+  openDeleteModal: (roomId: string) => void;
+  closeDeleteModal: () => void;
+  confirmDeleteRoom: () => Promise<void>;
 }
 
 export const useDashboardState = create<DashboardState>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     rooms: [],
     dashboardViewState: "RoomList",
     selectedRoom: undefined,
-    isDeletingExistingRoom: false,
+    isDeleteModalOpen: false,
+    roomToDeleteId: null,
+    isDeleting: false,
     isLoading: false,
     setDashboardViewState: (dashboardViewState: DashBoardViewState) => {
       set({ dashboardViewState });
@@ -49,6 +57,48 @@ export const useDashboardState = create<DashboardState>()(
     },
     add: (newRoom: RoomData) => {
       set((state) => ({ rooms: [...state.rooms, newRoom] }));
+    },
+    update: (updatedRoom: RoomData) => {
+      set((state) => ({
+        rooms: state.rooms.map((room) =>
+          room.id === updatedRoom.id ? updatedRoom : room
+        ),
+      }));
+    },
+    openDeleteModal: (roomId: string) => {
+      set({ isDeleteModalOpen: true, roomToDeleteId: roomId });
+    },
+    closeDeleteModal: () => {
+      set({
+        isDeleteModalOpen: false,
+        roomToDeleteId: null,
+        isDeleting: false,
+      });
+    },
+    confirmDeleteRoom: async () => {
+      const roomId = get().roomToDeleteId;
+      if (!roomId) return;
+
+      set({ isDeleting: true });
+      try {
+        await deleteRoom(roomId);
+        set((state) => ({
+          rooms: state.rooms.filter((room) => room.id !== roomId),
+          isDeleteModalOpen: false,
+          roomToDeleteId: null,
+          dashboardViewState: "RoomList",
+          selectedRoom: undefined,
+        }));
+      } catch (error) {
+        console.error("Failed to delete room:", error);
+        alert(
+          `Error deleting room: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`
+        );
+      } finally {
+        set({ isDeleting: false });
+      }
     },
   }))
 );
