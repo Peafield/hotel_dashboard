@@ -1,6 +1,5 @@
 "use client";
 
-// import { dummyRoomData } from "@/DummyData/dummyData";
 import { useDashboardState } from "@/store/useDashboardStore";
 import { viewTitleMap } from "@/types";
 import { useEffect } from "react";
@@ -8,8 +7,8 @@ import { RoomDetails } from "./RoomDetails";
 import { RoomList } from "./RoomList";
 import { ActionButton } from "./buttons/ActionButton";
 import { LargeActionButton } from "./buttons/LargeActionButton";
-import { PageTitle } from "./typography/PageTitle";
 import { DeleteConfirmModal } from "./modals/DeleteConfirmModal";
+import { PageTitle } from "./typography/PageTitle";
 
 export function Dashboard() {
   const {

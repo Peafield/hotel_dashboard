@@ -6,7 +6,7 @@ from app.utils.pdf_generator import generate_room_pdf
 
 
 # In-memory storage for the take-home-test.
-# In a real world example I would use a proper DB (Mongodb etc.)
+# In a real world example I would use a proper DB (MySQL, Mongodb etc.)
 db: Dict[uuid.UUID, Room] = {}
 
 

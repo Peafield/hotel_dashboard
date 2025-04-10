@@ -65,7 +65,7 @@ export function RoomList({ rooms }: RoomListProps) {
             rooms.map((room) => (
               <tr
                 key={room.id}
-                // biome-ignore lint/a11y/useSemanticElements: <explanation>
+                // biome-ignore lint/a11y/useSemanticElements: <we are adding tabIndex and keyboard handling to comply>
                 role="button"
                 onClick={() => handleRowClick(room)}
                 tabIndex={0}
