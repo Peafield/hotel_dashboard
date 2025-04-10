@@ -54,7 +54,7 @@ class RoomPDF(FPDF):
 def add_custom_fonts(pdf: FPDF):
     fonts_loaded = True
     try:
-        pdf.add_font("Karla", "M", KARLA_MEDIUM_PATH, uni=True)
+        pdf.add_font("Karla", "B", KARLA_MEDIUM_PATH, uni=True)
         pdf.add_font("Merriweather", "", MERRIWEATHER_REGULAR_PATH, uni=True)
         print("[PDF Gen] Custom static fonts added successfully.")
     except Exception as e:
@@ -96,12 +96,12 @@ def generate_room_pdf(room: Room):
         except Exception as logo_err:
             print(f"[PDF Gen] Error adding logo: {logo_err}")
             pdf.set_xy(logo_x_mm, logo_y_mm)
-            pdf.set_font(title_font_family, "M", 10)
+            pdf.set_font(title_font_family, "B", 10)
             pdf.cell(20, logo_h_mm, "(Logo Err)")
     elif not os.path.exists(LOGO_PATH):
         print(f"[PDF Gen] Logo not found at: {LOGO_PATH}")
         pdf.set_xy(logo_x_mm, logo_y_mm)
-        pdf.set_font(title_font_family, "M", 10)
+        pdf.set_font(title_font_family, "B", 10)
         pdf.cell(20, logo_h_mm, "(Logo Missing)")
 
     # --- Margins and Content ---
@@ -114,7 +114,7 @@ def generate_room_pdf(room: Room):
     # --- Room Title ---
     title_start_y_mm = 34.7
     pdf.set_y(title_start_y_mm)
-    pdf.set_font(title_font_family, "M", 35)
+    pdf.set_font(title_font_family, "B", 35)
     pdf.set_text_color(*COLOR_BODY_TEXT)
     pdf.multi_cell(0, 12, room.name, 0, 1, "L")
     pdf.ln(8)
@@ -173,7 +173,7 @@ def generate_room_pdf(room: Room):
     pdf.set_y(image_bottom_y + 15)
 
     # --- Facilities Title ---
-    pdf.set_font(title_font_family, "M", 18)
+    pdf.set_font(title_font_family, "B", 18)
     pdf.set_text_color(*COLOR_BODY_TEXT)
     pdf.cell(0, 9, "Facilities", 0, 1)
     pdf.ln(3)
