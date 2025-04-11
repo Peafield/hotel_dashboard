@@ -112,7 +112,7 @@ export function RoomDetailsForm({
     }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     submitHandler(formData);
   };

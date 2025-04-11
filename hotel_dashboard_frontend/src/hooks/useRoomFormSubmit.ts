@@ -23,10 +23,21 @@ export function useRoomFormSubmit({
     setIsSubmitting(true);
     setSubmitError(null);
 
+    // This is done to make sure ALL facilities are added, including those in the input.
+    let finalFacilities = [...formData.facilities];
+    const facilityToAddFromInput = formData.currentFacility.trim();
+    if (facilityToAddFromInput) {
+      const newFacility = {
+        id: crypto.randomUUID(),
+        text: facilityToAddFromInput,
+      };
+      finalFacilities.push(newFacility);
+    }
+
     const apiFormData = new FormData();
     apiFormData.append("name", formData.name);
     apiFormData.append("description", formData.description);
-    const facilityTexts = formData.facilities.map((item) => item.text);
+    const facilityTexts = finalFacilities.map((item) => item.text);
     apiFormData.append("facilities_json", JSON.stringify(facilityTexts));
     if (formData.selectedFile) {
       apiFormData.append(
