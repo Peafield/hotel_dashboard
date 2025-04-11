@@ -1,7 +1,7 @@
 import type { DashBoardViewState } from "@/types";
 import clsx from "clsx";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type ImageInputProps = {
   id: string;
@@ -24,22 +24,24 @@ export function ImageInput({
   ref,
   className,
 }: ImageInputProps) {
-  let imageUrl = "";
-  if (src && mode === "Edit") {
-    imageUrl = `http://localhost:8000/uploaded_images/${src}`;
-  }
-
-  if (selectedFile) {
-    imageUrl = URL.createObjectURL(selectedFile);
-  }
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let objectUrl: string | null = null;
+    if (selectedFile) {
+      objectUrl = URL.createObjectURL(selectedFile);
+      setImagePreviewUrl(objectUrl);
+    } else if (src && mode === "Edit") {
+      setImagePreviewUrl(`http://localhost:8000/uploaded_images/${src}`);
+    } else {
+      setImagePreviewUrl(null);
+    }
     return () => {
-      if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [imageUrl]);
+  }, [selectedFile, src, mode]);
 
   return (
     <fieldset>
@@ -52,10 +54,10 @@ export function ImageInput({
       >
         Image
       </label>
-      {imageUrl && (
+      {imagePreviewUrl && (
         <div className="relative w-full max-w-56 aspect-video mb-8">
           <Image
-            src={imageUrl}
+            src={imagePreviewUrl}
             alt="Preview"
             fill
             className="object-contain"
@@ -69,7 +71,7 @@ export function ImageInput({
         onChange={onChange}
         required={required}
         className="hidden"
-        disabled={!!imageUrl}
+        disabled={!!imagePreviewUrl}
         accept="image/png, image/jpeg, image/webp"
         ref={ref}
       />
