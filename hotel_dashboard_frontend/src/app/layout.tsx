@@ -14,6 +14,7 @@ const merriweather = localFont({
   src: "./fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf",
   display: "swap",
   variable: "--font-merriweather",
+  preload: false,
 });
 
 export const metadata: Metadata = {

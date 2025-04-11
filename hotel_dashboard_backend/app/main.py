@@ -33,9 +33,7 @@ os.makedirs(PDF_DIR_NAME, exist_ok=True)
 app.mount(
     f"/{UPLOAD_DIR_NAME}", StaticFiles(directory=UPLOAD_DIR_NAME), name=UPLOAD_DIR_NAME
 )
-app.mount(
-    f"/{PDF_DIR_NAME}", StaticFiles(directory=PDF_DIR_NAME), name="generated_pdfs"
-)
+app.mount(f"/{PDF_DIR_NAME}", StaticFiles(directory=PDF_DIR_NAME), name=PDF_DIR_NAME)
 
 
 @app.get("/")

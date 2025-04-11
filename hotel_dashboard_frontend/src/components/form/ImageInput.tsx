@@ -54,7 +54,13 @@ export function ImageInput({
       </label>
       {imageUrl && (
         <div className="relative w-full max-w-56 aspect-video mb-8">
-          <Image src={imageUrl} alt="Preview" fill className="object-contain" />
+          <Image
+            src={imageUrl}
+            alt="Preview"
+            fill
+            className="object-contain"
+            sizes="(max-width: 224px) 100vw, 224px"
+          />
         </div>
       )}
       <input
